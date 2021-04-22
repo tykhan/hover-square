@@ -1,24 +1,172 @@
-import logo from './logo.svg';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import {
+  Select,
+  MenuItem,
+  Box,
+  Typography,
+  Button,
+} from '@material-ui/core'
+
 import './App.css';
+import * as actions from './state/actions';
+import { DialogWindow } from './components/DialogWindow'
 
 function App() {
+  const dispatch = useDispatch();
+  const modes = useSelector(state => state.squareModes)
+  const currentMode = useSelector(state => state.currentMode)
+  const hoveredSquares = useSelector(state => state.hoveredSquares)
+  const [gameStarted, setGameStarted] = useState(false)
+  const [isDialogFinishOpen, setIsDialogFinishOpen] = useState(false)
+  const [isDialogVictoryOpen, setIsDialogVictoryOpen] = useState(false)
+  const blockRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(actions.fetchSquareModes())
+  }, [dispatch])
+
+  const handleMouseEnter = (e) => {
+    const hoveredDiv = e._targetInst.pendingProps.value;
+
+    if (hoveredSquares.includes(hoveredDiv)) {
+      dispatch(actions.removeFromHovered(hoveredDiv))
+      e.target.style.backgroundColor = 'white';
+    } else {
+      dispatch(actions.addToHovered(hoveredDiv))
+      e.target.style.backgroundColor = 'blue';
+    }
+
+    if (checkIfAllSquareHovered()) {
+      setIsDialogVictoryOpen(true)
+    }
+  }
+
+  const handleStartFinish = () => {
+    if (gameStarted) {
+      setIsDialogFinishOpen(true)
+    } else {
+      setGameStarted(prevState => !prevState)
+    }
+  }
+
+  const hanldeModeSelect = e => {
+    dispatch(actions.setCurrentMode(e.target.value))
+    let squaresList = blockRef?.current?.querySelectorAll('div')
+    if (squaresList) {
+      let squaresArray = [...squaresList]
+      squaresArray.forEach(square => square.style.backgroundColor = 'white')
+    }
+  }
+
+  const checkIfAllSquareHovered = useCallback(
+    () => {
+      let areHovered = true
+      let squaresList = blockRef?.current?.querySelectorAll('#block')
+
+      if (squaresList) {
+        [...squaresList].forEach(square => {
+          if (square.style.backgroundColor !== 'blue') {
+            areHovered = false
+            return
+          }
+        })
+      }
+      
+      return areHovered;
+    },
+    [],
+  )
+
+  const handleFinishGame = () => {
+    setIsDialogFinishOpen(false)
+    setGameStarted(false)
+    dispatch(actions.finishGame())
+  }
+  const percentsOfHovered = ((100 / (currentMode * currentMode)) * hoveredSquares.length).toFixed(1)
+
+  const generateSquares = () => {
+    if (!currentMode || currentMode === 0) {
+      return
+    }
+    const array = Array.from(Array(currentMode), () => Array(currentMode).fill(currentMode))
+
+    return (
+      <Box style={{ marginTop: 20 }} ref={blockRef}>
+        {array.map((rowEl, rowIndex) => {
+          return (
+            <Box
+              
+              style={{ height: 50, width: 'fit-content', border: '1px solid black', display: 'flex' }}
+              key={rowIndex}
+            >
+              {rowEl.map((_, colIndex) => {
+                return (
+                  <Box
+                    id="block"
+                    value={`row ${rowIndex + 1} col ${colIndex + 1}`}
+                    style={{ width: 50, height: 50, border: '1px solid black' }}
+                    onMouseEnter={e => handleMouseEnter(e)}
+                    key={colIndex}
+                  ></Box>
+                )
+              })}
+            </Box>
+          )
+        })}
+      </Box>
+    )
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box className="App" >
+      <Box style={{ width: 'fit-content' }}>
+        <Box>
+          <Select
+            displayEmpty
+            onChange={(e) => hanldeModeSelect(e)}
+            value={currentMode}
+            style={{ width: 150 }}
+          >
+            <MenuItem value={0} defaultValue>Pick mode...</MenuItem>
+            {Object.entries(modes).map(mode => {
+              return (
+                <MenuItem
+                  key={mode[0]}
+                  value={mode[1].field}
+                >
+                  {mode[0]}
+                </MenuItem>
+              )
+            })}
+          </Select>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleStartFinish}
+            disabled={currentMode === 0}
+            style={{ marginLeft: 20 }}
+          >
+            {(!gameStarted || currentMode === 0) ? 'START' : 'FINISH'}
+          </Button>
+        </Box>
+        {gameStarted && generateSquares()}
+      </Box>
+      <Box style={{ padding: 50 }}>
+        {!!hoveredSquares.length && <Typography>Hovered squares:</Typography>}
+        {hoveredSquares.map(square => (
+          <Typography key={square}>{square}</Typography>
+        ))}
+      </Box>
+      <DialogWindow
+        isDialogOpen={isDialogVictoryOpen ? isDialogVictoryOpen : isDialogFinishOpen}
+        setIsDialogOpen={isDialogVictoryOpen ? setIsDialogVictoryOpen : setIsDialogFinishOpen}
+        handleFinishGame={handleFinishGame}
+        dialogContent={isDialogVictoryOpen ? "Victoryyy...You hovered 100% of squares!" : `You hovered ${hoveredSquares.length} (${percentsOfHovered})% squares`}
+        dialogTitle={isDialogVictoryOpen ? "Do you want to finish this game?" : "Do you really want to finish?"}
+      />
+    </Box>
   );
 }
 
