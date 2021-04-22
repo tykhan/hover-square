@@ -5,13 +5,14 @@ import {
   Select,
   MenuItem,
   Box,
-  Typography,
   Button,
 } from '@material-ui/core'
 
 import './App.css';
 import * as actions from './state/actions';
 import { DialogWindow } from './components/DialogWindow'
+import { HoveredSquares } from './components/HoveredSquares'
+import { Square } from './components/Square'
 
 function App() {
   const dispatch = useDispatch();
@@ -97,21 +98,17 @@ function App() {
         {array.map((rowEl, rowIndex) => {
           return (
             <Box
-              
               style={{ height: 50, width: 'fit-content', border: '1px solid black', display: 'flex' }}
               key={rowIndex}
             >
-              {rowEl.map((_, colIndex) => {
-                return (
-                  <Box
-                    id="block"
-                    value={`row ${rowIndex + 1} col ${colIndex + 1}`}
-                    style={{ width: 50, height: 50, border: '1px solid black' }}
-                    onMouseEnter={e => handleMouseEnter(e)}
-                    key={colIndex}
-                  ></Box>
+              {rowEl.map((_, colIndex) => (
+                  <Square
+                    handleMouseEnter={handleMouseEnter}
+                    colIndex={colIndex}
+                    rowIndex={rowIndex}
+                  />
                 )
-              })}
+              )}
             </Box>
           )
         })}
@@ -130,16 +127,12 @@ function App() {
             style={{ width: 150 }}
           >
             <MenuItem value={0} defaultValue>Pick mode...</MenuItem>
-            {Object.entries(modes).map(mode => {
-              return (
-                <MenuItem
-                  key={mode[0]}
-                  value={mode[1].field}
-                >
+            {Object.entries(modes).map(mode => (
+                <MenuItem key={mode[0]} value={mode[1].field}>
                   {mode[0]}
                 </MenuItem>
               )
-            })}
+            )}
           </Select>
           <Button
             variant="contained"
@@ -153,12 +146,7 @@ function App() {
         </Box>
         {gameStarted && generateSquares()}
       </Box>
-      <Box style={{ padding: 50 }}>
-        {!!hoveredSquares.length && <Typography>Hovered squares:</Typography>}
-        {hoveredSquares.map(square => (
-          <Typography key={square}>{square}</Typography>
-        ))}
-      </Box>
+      <HoveredSquares hoveredSquares={hoveredSquares}/>
       <DialogWindow
         isDialogOpen={isDialogVictoryOpen ? isDialogVictoryOpen : isDialogFinishOpen}
         setIsDialogOpen={isDialogVictoryOpen ? setIsDialogVictoryOpen : setIsDialogFinishOpen}
