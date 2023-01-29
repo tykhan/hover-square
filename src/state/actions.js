@@ -12,7 +12,12 @@ export const fetchSquareModes = () => {
       const modes = await response.json();
       dispatch(setSquareModes(modes))
     } catch (error) {
-      console.error('Error while loading presets')
+      console.error('Error while loading presets');
+      dispatch(setSquareModes({
+        '3x3': {field: 3},
+        '6x6': {field: 6},
+        '9x9': {field: 9},
+      }))
     }
   }
 }
