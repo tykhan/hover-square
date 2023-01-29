@@ -1,22 +1,20 @@
 {
   "files": {
     "main.css": "/hover-square/static/css/main.161ec293.chunk.css",
-    "main.js": "/hover-square/static/js/main.14522bf3.chunk.js",
-    "main.js.map": "/hover-square/static/js/main.14522bf3.chunk.js.map",
-    "runtime-main.js": "/hover-square/static/js/runtime-main.2baf79d2.js",
-    "runtime-main.js.map": "/hover-square/static/js/runtime-main.2baf79d2.js.map",
-    "static/js/2.bf1ed486.chunk.js": "/hover-square/static/js/2.bf1ed486.chunk.js",
-    "static/js/2.bf1ed486.chunk.js.map": "/hover-square/static/js/2.bf1ed486.chunk.js.map",
-    "static/js/3.9ecd5f00.chunk.js": "/hover-square/static/js/3.9ecd5f00.chunk.js",
-    "static/js/3.9ecd5f00.chunk.js.map": "/hover-square/static/js/3.9ecd5f00.chunk.js.map",
+    "main.js": "/hover-square/static/js/main.e25ef1cb.chunk.js",
+    "main.js.map": "/hover-square/static/js/main.e25ef1cb.chunk.js.map",
+    "runtime-main.js": "/hover-square/static/js/runtime-main.6228a760.js",
+    "runtime-main.js.map": "/hover-square/static/js/runtime-main.6228a760.js.map",
+    "static/js/2.90e1a323.chunk.js": "/hover-square/static/js/2.90e1a323.chunk.js",
+    "static/js/2.90e1a323.chunk.js.map": "/hover-square/static/js/2.90e1a323.chunk.js.map",
     "index.html": "/hover-square/index.html",
     "static/css/main.161ec293.chunk.css.map": "/hover-square/static/css/main.161ec293.chunk.css.map",
-    "static/js/2.bf1ed486.chunk.js.LICENSE.txt": "/hover-square/static/js/2.bf1ed486.chunk.js.LICENSE.txt"
+    "static/js/2.90e1a323.chunk.js.LICENSE.txt": "/hover-square/static/js/2.90e1a323.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.2baf79d2.js",
-    "static/js/2.bf1ed486.chunk.js",
+    "static/js/runtime-main.6228a760.js",
+    "static/js/2.90e1a323.chunk.js",
     "static/css/main.161ec293.chunk.css",
-    "static/js/main.14522bf3.chunk.js"
+    "static/js/main.e25ef1cb.chunk.js"
   ]
 }
